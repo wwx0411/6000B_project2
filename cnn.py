@@ -217,3 +217,46 @@ for epoch in range(num_epoch):
     saver.save(sess,path)
 sess.close()
 
+'''
+epoch=21
+filename="model"+str(epoch)
+path=filename+"/model.ckpt"
+sess=tf.InteractiveSession() 
+saver.restore(sess,path)
+predict_val=sess.run(predict, feed_dict={x_place: x_val})
+error_rate_val=error_rate(predict_val,y_val)
+print(1-error_rate_val)
+val_loss, val_acc = 0, 0
+for x_val_a, y_val_a in minibatches(x_val, y_val, batch_size, shuffle=False):
+    loss_local=sess.run(loss, feed_dict={x_place: x_val_a, y_place: y_val_a})
+    acc_local=sess.run(acc, feed_dict={x_place: x_val_a, y_place: y_val_a})
+    val_loss += loss_local; val_acc += acc_local
+print("   validation loss: %f" % (val_loss/ len(y_val)))
+print("   validation acc: %f" % (val_acc/ len(y_val)))
+#lost any thing?
+predict_val=sess.run(predict, feed_dict={x_place: x_val})
+error_rate_val=error_rate(predict_val,y_val)
+print(error_rate_val+val_acc/ len(y_val))
+
+path_test='test.txt'
+file=open(path_test)
+try:
+    file_context=file.read()
+finally:
+    file.close()
+    x_index=file_context.split('\n')
+if x_index[len(x_index)-1]=='':
+    x_index=x_index[0:len(x_index)-1]
+x_test=[]
+for i in range(len(x_index)):
+    pic_raw=io.imread(x_index[i])
+    pic=transform.resize(pic_raw,(w,h))
+    x_test.append(pic)
+    
+predict_test=sess.run(predict, feed_dict={x_place: x_test})
+file=open("project2_20476516.txt","w")
+for i in predict_test:
+    file.write(str(i)+'\n')
+file.close
+sess.close()
+'''
