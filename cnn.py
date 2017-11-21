@@ -175,8 +175,9 @@ logits= tf.layers.dense(inputs=dense2,
 
 loss=tf.losses.sparse_softmax_cross_entropy(labels=y_place,logits=logits)
 train_op=tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)
-correct_prediction = tf.equal(tf.cast(tf.argmax(logits,1),tf.int32), y_place)    
-acc= tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+predict=tf.cast(tf.argmax(logits,1),tf.int32)
+correct_prediction = tf.equal(predict, y_place)    
+acc= tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
 
 
 num_epoch=30
@@ -187,23 +188,27 @@ sess.run(tf.global_variables_initializer())
 for epoch in range(num_epoch):
     print("epoch",epoch)
     #training
-    train_loss, train_acc, n_batch = 0, 0, 0
+    train_loss, train_acc = 0, 0
     for x_train_a, y_train_a in minibatches(x, y, batch_size, shuffle=True):
         sess.run(train_op, feed_dict={x_place: x_train_a, y_place: y_train_a})
         loss_local=sess.run(loss, feed_dict={x_place: x_train_a, y_place: y_train_a})
         acc_local=sess.run(acc, feed_dict={x_place: x_train_a, y_place: y_train_a})
-        train_loss += loss_local; train_acc += acc_local; n_batch += 1
-    print("   train loss: %f" % (train_loss/ n_batch))
-    print("   train acc: %f" % (train_acc/ n_batch))
+        train_loss += loss_local; train_acc += acc_local
+    print("   train loss: %f" % (train_loss/ len(y)))
+    print("   train acc: %f" % (train_acc/ len(y)))
     
     #validation
-    val_loss, val_acc, n_batch = 0, 0, 0
+    val_loss, val_acc = 0, 0
     for x_val_a, y_val_a in minibatches(x_val, y_val, batch_size, shuffle=False):
-        loss_local=sess.run(loss, feed_dict={x_place: x_train_a, y_place: y_train_a})
-        acc_local=sess.run(acc, feed_dict={x_place: x_train_a, y_place: y_train_a})
-        val_loss += loss_local; val_acc += acc_local; n_batch += 1
-    print("   validation loss: %f" % (val_loss/ n_batch))
-    print("   validation acc: %f" % (val_acc/ n_batch))
+        loss_local=sess.run(loss, feed_dict={x_place: x_val_a, y_place: y_val_a})
+        acc_local=sess.run(acc, feed_dict={x_place: x_val_a, y_place: y_val_a})
+        val_loss += loss_local; val_acc += acc_local
+    print("   validation loss: %f" % (val_loss/ len(y_val)))
+    print("   validation acc: %f" % (val_acc/ len(y_val)))
+    #lost any thing?
+    predict_val=sess.run(predict, feed_dict={x_place: x_val})
+    error_rate=error_rate(predict_val,y_val)
+    print(error_rate+val_acc/ len(y_val))
     
     filename="model"+str(epoch)
     os.mkdir(filename)
