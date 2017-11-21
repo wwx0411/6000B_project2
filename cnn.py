@@ -207,8 +207,8 @@ for epoch in range(num_epoch):
     print("   validation acc: %f" % (val_acc/ len(y_val)))
     #lost any thing?
     predict_val=sess.run(predict, feed_dict={x_place: x_val})
-    error_rate=error_rate(predict_val,y_val)
-    print(error_rate+val_acc/ len(y_val))
+    error_rate_val=error_rate(predict_val,y_val)
+    print(error_rate_val+val_acc/ len(y_val))
     
     filename="model"+str(epoch)
     os.mkdir(filename)
