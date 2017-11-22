@@ -49,12 +49,6 @@ predictions = Dense(5, activation='softmax')(x)
 model = Model(input=base.input, output=predictions)
 model = Model(inputs=base.input, outputs=predictions)
 
-'''
-for layer in base.layers:
-    layer.trainable = False
-
-model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics=['accuracy'])
-'''
 
 train_datagen = ImageDataGenerator(
     rescale=1. / 255,
@@ -83,30 +77,15 @@ validation_generator = test_datagen.flow_from_directory(
     class_mode='categorical')
 
 
-'''
-model.fit_generator(
-    train_generator,
-    steps_per_epoch=num_training_img // batch_size,  # steps =  num_images // batch_size = total num of complete passes
-    epochs=2)
-    validation_data=validation_generator,
-    validation_steps=num_val_img // batch_size)
-
-
-for i, layer in enumerate(base.layers):
-    print(i, layer.name)
-
-'''
 
 for layer in model.layers[:172]:
     layer.trainable = False
 for layer in model.layers[172:]:
     layer.trainable = True
 
-#from keras.optimizers import SGD
 
-model.compile(optimizer=optimizers.SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=optimizers.SGD(lr=0.001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
 
-# train our model while back propagating through our layers and the top two blocks of the InceptionV3 architecture
 model.fit_generator(
     train_generator,
     steps_per_epoch=2569 // batch_size,
@@ -122,4 +101,7 @@ print(results)
 X_series = pd.Series(results)
 X_series.to_csv('/results.csv',encoding = 'utf-8')
 
-
+file=open("/project2_20476516.txt","w")
+for i in results:
+    file.write(str(i)+'\n')
+file.close()
