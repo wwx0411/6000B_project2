@@ -93,6 +93,7 @@ def minibatches(x, y, batch_size=1, shuffle=False):
 
 
 
+
 path='train'    
 w=h=100
 c=3   
@@ -105,6 +106,23 @@ path='val'
 x_val,y_val=read_x_y(path,w,h)
 y_val=np.asarray(y_val,np.int32)
 x_val=np.asarray(x_val,np.float32)
+
+path_test='test.txt'
+file=open(path_test)
+try:
+    file_context=file.read()
+finally:
+    file.close()
+    x_index=file_context.split('\n')
+if x_index[len(x_index)-1]=='':
+    x_index=x_index[0:len(x_index)-1]
+x_test=[]
+for i in range(len(x_index)):
+    pic_raw=io.imread(x_index[i])
+    pic=transform.resize(pic_raw,(w,h))
+    x_test.append(pic)
+
+
 
 
 
@@ -180,7 +198,7 @@ correct_prediction = tf.equal(predict, y_place)
 acc= tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
 
 
-num_epoch=30
+num_epoch=40
 
 batch_size=64
 sess=tf.InteractiveSession()  
@@ -210,18 +228,28 @@ for epoch in range(num_epoch):
     error_rate_val=error_rate(predict_val,y_val)
     print(error_rate_val+val_acc/ len(y_val))
     
+    predict_test=sess.run(predict, feed_dict={x_place: x_test})
+    
     filename="model"+str(epoch)
     os.mkdir(filename)
     saver=tf.train.Saver()
     path=filename+"/model.ckpt"
     saver.save(sess,path)
+    
+    path_result=filename+"/project2_20476516.txt"
+    file=open(path_result,"w")
+    for i in predict_test:
+        file.write(str(i)+'\n')
+    file.close()
+    
 sess.close()
 
 '''
-epoch=0
+epoch=21
 filename="model"+str(epoch)
 path=filename+"/model.ckpt"
-sess=tf.InteractiveSession() 
+sess=tf.InteractiveSession()
+#saver=tf.train.Saver()
 saver.restore(sess,path)
 predict_val=sess.run(predict, feed_dict={x_place: x_val})
 error_rate_val=error_rate(predict_val,y_val)
@@ -257,6 +285,8 @@ predict_test=sess.run(predict, feed_dict={x_place: x_test})
 file=open("project2_20476516.txt","w")
 for i in predict_test:
     file.write(str(i)+'\n')
-file.close
+file.close()
+
+
 sess.close()
 '''
