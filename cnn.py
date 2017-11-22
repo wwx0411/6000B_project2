@@ -218,6 +218,7 @@ for epoch in range(num_epoch):
 sess.close()
 
 '''
+saver=tf.train.Saver()
 epoch=21
 filename="model"+str(epoch)
 path=filename+"/model.ckpt"
