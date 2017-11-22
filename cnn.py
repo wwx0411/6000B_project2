@@ -223,7 +223,7 @@ epoch=21
 filename="model"+str(epoch)
 path=filename+"/model.ckpt"
 sess=tf.InteractiveSession() 
-saver.restore(sess,path)
+#saver.restore(sess,path)
 predict_val=sess.run(predict, feed_dict={x_place: x_val})
 error_rate_val=error_rate(predict_val,y_val)
 print(1-error_rate_val)
