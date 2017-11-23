@@ -6,15 +6,13 @@ Created on Wed Nov 22 20:07:53 2017
 @author: wwangbt
 """
 from keras.applications.inception_v3 import InceptionV3
-from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.models import Model
 from keras.layers import Dense, GlobalAveragePooling2D
 from keras import optimizers
-# Create the base pre-trained model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.datasets import cifar10
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D
 import pandas as pd 
 import os as os 
@@ -59,9 +57,9 @@ test_datagen = ImageDataGenerator(rescale=1. / 255)
 
 train_generator = train_datagen.flow_from_directory(
     'data/flower_photos',  
-    target_size=(dim, dim),  # all images will be resized to dim * dim
+    target_size=(dim, dim),  # image size dim * dim
     batch_size=batch_size,
-    class_mode='categorical')  # since loss = categorical_crossentropy, our class labels should be categorical
+    class_mode='categorical') 
 
 
 test_generator = test_datagen.flow_from_directory(
