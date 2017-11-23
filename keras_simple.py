@@ -97,9 +97,11 @@ x_test=x_test/255
 
 base = InceptionV3(weights='imagenet', include_top=False,input_shape=[299,299,3])
 x = base.output
+'''
 x=Conv2D(128, (3, 3), padding='same')(x)
 x=Activation('relu')(x)
 x = GlobalAveragePooling2D()(x)
+'''
 x=Flatten()(x)
 x = Dense(1024, activation='relu')(x)
 x=Dropout(0.7)(x)
