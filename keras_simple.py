@@ -104,17 +104,17 @@ x = GlobalAveragePooling2D()(x)
 '''
 x=Flatten()(x)
 x = Dense(1024, activation='relu')(x)
-x=Dropout(0.7)(x)
+x=Dropout(0.5)(x)
 predictions = Dense(5, activation='softmax')(x)
 model = Model(input=base.input, output=predictions)
 
 
-model.compile(optimizer=optimizers.SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer=optimizers.SGD(lr=0.001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
 model.fit(x_train,y_train,epochs=2,validation_data=(x_val,y_val))
 
 
 y_test=model.predict(x_test)
-result = np.argmax(y_test, axis=1).shape
+result = np.argmax(y_test, axis=1)
 
 
 
