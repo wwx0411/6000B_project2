@@ -117,11 +117,10 @@ y_test=model.predict(x_test)
 result = np.argmax(y_test, axis=1).shape
 
 
-'''
+
 file=open("/project2_20476516.txt","w")
-for i in results:
+for i in result:
     file.write(str(i)+'\n')
 file.close()
-path=/project2_20476516.csv"
-np.savetxt(path, result, fmt=%d, delimiter=",")
-'''
+path="/project2_20476516.csv"
+np.savetxt(path, result, fmt='%d', delimiter=",")
